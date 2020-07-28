@@ -20,14 +20,6 @@ namespace API.Controllers
             return Ok(basket ?? new CustomerBasket(id));
         }
 
-        // [HttpGet]
-        // public async Task<ActionResult<CustomerBasket[]>> GetBaskets()
-        // {
-        //     return await _basketRepository.GetBasketsAsync();
-        // }
-
-
-
         [HttpPost]
         public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasket basket)
         {

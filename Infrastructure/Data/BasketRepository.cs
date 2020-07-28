@@ -38,9 +38,5 @@ namespace Infrastructure.Data
             return await _database.KeyDeleteAsync(basketId);
         }
 
-        // public async Task<CustomerBasket[]> GetBasketsAsync()
-        // {
-        //     return await _database.;
-        // }
     }
 }
