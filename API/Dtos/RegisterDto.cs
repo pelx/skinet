@@ -14,8 +14,8 @@ namespace API.Dtos
 
         // regexlib 
         [Required]
-        [RegularExpression("^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$",
-        ErrorMessage = "Password must contain at least one letter, at least one number, and be longer than six charaters.")]
+        [RegularExpression("(?=^.{6,10}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\\s).*$",
+        ErrorMessage = "Password must contain atleast 1 small-case letter, 1 Capital letter, 1 digit, 1 special character and the length should be between 6-10 characters. ")]
         public string Password { get; set; }
     }
 }
