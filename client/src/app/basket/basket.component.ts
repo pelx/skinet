@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IBasket, IBasketItem } from '../shared/models/basket';
 import { BasketService } from './basket.service';
-import { timeInterval } from 'rxjs/operators';
 
 @Component({
   selector: 'app-basket',
@@ -23,10 +22,11 @@ export class BasketComponent implements OnInit {
   }
 
   incrementItemQuantity(item: IBasketItem) {
-    this.basketService.icrementItemQuantity(item);
+    this.basketService.incrementItemQuantity(item);
   }
 
-  dencrementItemQuantity(item: IBasketItem) {
+  decrementItemQuantity(item: IBasketItem) {
+    console.log('Basket decrement: ', item);
     this.basketService.decrementItemQuantity(item);
   }
 }
