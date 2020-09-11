@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
     // if (token) {
     this.accountService.loadCurrentUser(token).subscribe(
       () => {
-        console.log('loaded user');
+        // console.log('loaded user');
       },
       (error) => {
         console.log(error);
@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
     if (basketId) {
       this.basketService.getBasket(basketId).subscribe(
         () => {
-          console.log('stored basket');
+          // console.log('stored basket');
         },
         (error) => {
           console.log(error);
