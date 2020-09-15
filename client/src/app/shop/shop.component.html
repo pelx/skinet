@@ -10,6 +10,7 @@
                 >
                     <option
                         *ngFor="let sort of sortOptions"
+                        [selected]="shopParams.sort===sort.value"
                         [value]="sort.value"
                     >
                         {{sort.name}}
@@ -92,6 +93,7 @@
             >
                 <app-pager
                     [pageSize]="shopParams.pageSize"
+                    [pageNumber]="shopParams.pageNumber"
                     [totalCount]="totalCount"
                     (pageChanged)="onPageChanged($event)"
                 >

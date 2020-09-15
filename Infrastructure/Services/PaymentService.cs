@@ -6,6 +6,7 @@ using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Stripe;
 using Order = Core.Entities.OrderAggregate.Order;
 using Product = Core.Entities.Product;
@@ -17,8 +18,10 @@ namespace Infrastructure.Services
         private readonly IBasketRepository _basketRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _config;
-        public PaymentService(IBasketRepository basketRepository, IUnitOfWork unitOfWork, IConfiguration config)
+        private readonly ILogger<IOrderService> _logger;
+        public PaymentService(IBasketRepository basketRepository, IUnitOfWork unitOfWork, IConfiguration config, ILogger<IOrderService> logger)
         {
+            _logger = logger;
             _config = config;
             _unitOfWork = unitOfWork;
             _basketRepository = basketRepository;
@@ -106,6 +109,7 @@ namespace Infrastructure.Services
 
             order.Status = OrderStatus.PaymentReceived;
             _unitOfWork.Repository<Order>().Update(order);
+            _logger.LogError("Order Update:", order);
 
             await _unitOfWork.Complete();
 
