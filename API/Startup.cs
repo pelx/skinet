@@ -1,10 +1,8 @@
-using System.Linq;
-using API.Errors;
+using System.IO;
 using API.Extentions;
 using API.Helpers;
 using API.Middleware;
 using AutoMapper;
-using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -13,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace API
@@ -27,12 +25,22 @@ namespace API
             _config = config;
         }
 
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureProductionServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddControllers();
+
+            services.AddDbContext<StoreContext>(x =>
+            x.UseMySql(_config.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseMySql(_config.GetConnectionString("IdentityConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
             services.AddDbContext<StoreContext>(x =>
                 x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
 
@@ -40,6 +48,14 @@ namespace API
             {
                 x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
             });
+
+            ConfigureServices(services);
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(MappingProfiles));
+            services.AddControllers();
 
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
@@ -81,6 +97,13 @@ namespace API
             app.UseRouting();
 
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Content")
+                ),
+                RequestPath = "/content"
+            });
 
             app.UseCors("CorsPolicy");
 
@@ -93,6 +116,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }
